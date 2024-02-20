@@ -1,0 +1,38 @@
+version: '3.9'
+
+services:
+  dotnet:
+    container_name: 'Ada_app'
+    image: 'ada_app_image'
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    ports:
+     - "5000:80"
+    environment: 
+      ASPNETCORE_URLS : http://+
+      ASPNETCORE_ENVIRONMENT : Development
+    depends_on:
+     - "postgres"
+    networks:
+      - ada_app_image-network
+
+  postgres:
+    container_name: 'postgres_ada'
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: Nome_DB
+    networks:
+      - ada_app_image-network
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+networks:
+  ada_app_image-network:
+    driver: bridge
+
+volumes:
+  db-data:
