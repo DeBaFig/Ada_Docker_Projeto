@@ -184,7 +184,7 @@ FROM postgres:14.3
 
 WORKDIR /docker-entrypoint-initdb.d
 
-ADD schema.sql .
+ADD ./Postgres/schema.sql /docker-entrypoint-initdb.d
 
 VOLUME [ "db-data:/var/lib/postgresql/data" ]
 
@@ -224,7 +224,8 @@ Lembrando que eu já estava logada, mas se for necessário pode se usar o comand
 docker login
 ```
 
-[Link do Docker Hub com o Projeto](https://hub.docker.com/repository/docker/debafig/projeto-ada-docker-denize/general)
+[Link do Docker Hub com o Projeto](https://hub.docker.com/repository/docker/debafig/projeto-ada-docker-denize/general)  
+
 [Link do Docker Hub com o Banco de Dados](https://hub.docker.com/repository/docker/debafig/projeto-ada-docker-denize-db/general)
 
 ## Objetivo
@@ -238,7 +239,6 @@ Fixar conteúdo de Docker
  3. Iniciar um terminal na pasta onde tem o compose.ymal
  4. Rodar o comando: docker compose up -d
  5. Acessar o localhost:5000
- 6. Clicar no Registar na barra de navegação (a primeira vez terá que aceitar rodar as migrations)
 
 *Como o volume não será recriado a cada docker compose up -d então mesmo que você desça o container o banco de dados continua no volume
 
