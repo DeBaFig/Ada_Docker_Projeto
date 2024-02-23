@@ -14,6 +14,8 @@
 
 - [Projeto - Curso Conteinerização Ada Devª](#projeto---curso-conteinerização-ada-devª)
   - [Sobre](#sobre)
+    - [Postgres](#postgres)
+    - [Para o Docker Hub](#para-o-docker-hub)
   - [Objetivo](#objetivo)
   - [Como executar](#como-executar)
   - [Referências](#referências)
@@ -134,39 +136,66 @@ version: '3.9'
 services:
   dotnet:
     container_name: 'Ada_app'
-    image: 'ada_app_image'
+    image: 'projeto-ada-docker-denize'
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./Ada_app/Dockerfile
     restart: always
     ports:
      - "5000:80"
-    environment: 
-      ASPNETCORE_URLS : http://+
-      ASPNETCORE_ENVIRONMENT : Development
     depends_on:
      - "postgres"
     networks:
       - ada_app_image-network
+    env_file:
+      - config.env
 
   postgres:
     container_name: 'postgres_ada'
-    image: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: Nome_DB
+    image: projeto-ada-docker-denize-db
+    build:
+      context: .
+      dockerfile: ./Postgres/Dockerfile
     networks:
       - ada_app_image-network
     volumes:
       - db-data:/var/lib/postgresql/data
+      # cria as tabelas
+      - ./Postgres/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    env_file:
+      - config.env
 
 networks:
   ada_app_image-network:
     driver: bridge
 
 volumes:
-  db-data:
+  db-data: {}
+```
+
+### Postgres
+
+O Banco de Dados começa com o schema.sql já com as tabelas necessárias para rodar o projeto incial, porém não tem nenhum dado ainda vinculado, para isso basta você fazer um registo no localhost:5000/register
+
+Dockerfile usado:
+
+```dockerfile
+FROM postgres:14.3
+
+WORKDIR /docker-entrypoint-initdb.d
+
+ADD schema.sql .
+
+VOLUME [ "db-data:/var/lib/postgresql/data" ]
+
+EXPOSE 5432
+```
+
+Uma das dificuldades foi conseguir rodar o projeto já com o banco de dados com o schema.sql
+
+Para isso foi necessário adicionar a linha: 
+```
+- ./Postgres/schema.sql:/docker-entrypoint-initdb.d/schema.sql
 ```
 
 Rodei o Projeto com:
@@ -174,6 +203,29 @@ Rodei o Projeto com:
 ```bash
 docker compose up -d
 ```
+
+### Para o Docker Hub
+
+Para subir as imagens no [Docker Hub](https://hub.docker.com/) foi necessário primeiro criar um repositório com o nome da minha imagem e depois uma tag com a versão do projeto usando o seguinte comando:
+
+```shell
+docker tag projeto-ada-docker-denize-db debafig/projeto-ada-docker-denize-db:version1
+```
+
+Então para enviar a imagem do projeto o comando:
+
+```shell
+docker push debafig/projeto-ada-docker-denize-db:version1
+```
+
+Lembrando que eu já estava logada, mas se for necessário pode se usar o comando:
+
+```shell
+docker login
+```
+
+[Link do Docker Hub com o Projeto](https://hub.docker.com/repository/docker/debafig/projeto-ada-docker-denize/general)
+[Link do Docker Hub com o Banco de Dados](https://hub.docker.com/repository/docker/debafig/projeto-ada-docker-denize-db/general)
 
 ## Objetivo
 

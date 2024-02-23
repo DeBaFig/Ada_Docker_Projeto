@@ -3,36 +3,38 @@ version: '3.9'
 services:
   dotnet:
     container_name: 'Ada_app'
-    image: 'ada_app_image'
+    image: 'projeto-ada-docker-denize'
     build:
       context: .
-      dockerfile: ./Dockerfile
+      dockerfile: ./Ada_app/Dockerfile
     restart: always
     ports:
      - "5000:80"
-    environment: 
-      ASPNETCORE_URLS : http://+
-      ASPNETCORE_ENVIRONMENT : Development
     depends_on:
      - "postgres"
     networks:
       - ada_app_image-network
+    env_file:
+      - config.env
 
   postgres:
     container_name: 'postgres_ada'
-    image: postgres
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
-      POSTGRES_DB: Nome_DB
+    image: projeto-ada-docker-denize-db
+    build:
+      context: .
+      dockerfile: ./Postgres/Dockerfile
     networks:
       - ada_app_image-network
     volumes:
       - db-data:/var/lib/postgresql/data
+      # copy the sql script to create tables
+      - ./Postgres/schema.sql:/docker-entrypoint-initdb.d/schema.sql
+    env_file:
+      - config.env
 
 networks:
   ada_app_image-network:
     driver: bridge
 
 volumes:
-  db-data:
+  db-data: {}
