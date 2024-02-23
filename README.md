@@ -24,7 +24,7 @@
 
 ## Sobre
 
-Projeto final do curso de Docker feito em .NET 8.0
+Projeto final do curso de Docker feito em .NET 8.0 usando Postgres
 Para criação das imagens foi usado como base o comando para criar um projeto em mvc em C#:
 
 ```bash
@@ -136,7 +136,7 @@ version: '3.9'
 services:
   dotnet:
     container_name: 'Ada_app'
-    image: 'projeto-ada-docker-denize'
+    image: 'denize-ada-app'
     build:
       context: .
       dockerfile: ./Ada_app/Dockerfile
@@ -152,7 +152,7 @@ services:
 
   postgres:
     container_name: 'postgres_ada'
-    image: projeto-ada-docker-denize-db
+    image: 'denize-ada-db'
     build:
       context: .
       dockerfile: ./Postgres/Dockerfile
@@ -175,7 +175,7 @@ volumes:
 
 ### Postgres
 
-O Banco de Dados começa com o schema.sql já com as tabelas necessárias para rodar o projeto incial, porém não tem nenhum dado ainda vinculado, para isso basta você fazer um registo no localhost:5000/register
+O Banco de Dados começa com o schema.sql já com as tabelas necessárias para rodar o projeto inicial, porém não tem nenhum dado ainda vinculado, para isso basta você fazer um registo no localhost:5000/register
 
 Dockerfile usado:
 
@@ -185,8 +185,6 @@ FROM postgres:14.3
 WORKDIR /docker-entrypoint-initdb.d
 
 ADD ./Postgres/schema.sql /docker-entrypoint-initdb.d
-
-VOLUME [ "db-data:/var/lib/postgresql/data" ]
 
 EXPOSE 5432
 ```
@@ -209,13 +207,13 @@ docker compose up -d
 Para subir as imagens no [Docker Hub](https://hub.docker.com/) foi necessário primeiro criar um repositório com o nome da minha imagem e depois uma tag com a versão do projeto usando o seguinte comando:
 
 ```shell
-docker tag projeto-ada-docker-denize-db debafig/projeto-ada-docker-denize-db:version1
+docker tag denize-ada-app debafig/denize-ada-app:1.0
 ```
 
 Então para enviar a imagem do projeto o comando:
 
 ```shell
-docker push debafig/projeto-ada-docker-denize-db:version1
+docker push debafig/denize-ada-app:1.0
 ```
 
 Lembrando que eu já estava logada, mas se for necessário pode se usar o comando:
@@ -224,9 +222,9 @@ Lembrando que eu já estava logada, mas se for necessário pode se usar o comand
 docker login
 ```
 
-[Link do Docker Hub com o Projeto](https://hub.docker.com/repository/docker/debafig/projeto-ada-docker-denize/general)  
+[Link do Docker Hub com o Projeto](https://hub.docker.com/repository/docker/debafig/denize-ada-app/general)  
 
-[Link do Docker Hub com o Banco de Dados](https://hub.docker.com/repository/docker/debafig/projeto-ada-docker-denize-db/general)
+[Link do Docker Hub com o Banco de Dados](https://hub.docker.com/repository/docker/debafig/denize-ada-app/general)
 
 ## Objetivo
 

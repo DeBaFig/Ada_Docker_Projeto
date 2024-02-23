@@ -3,7 +3,7 @@ version: '3.9'
 services:
   dotnet:
     container_name: 'Ada_app'
-    image: 'projeto-ada-docker-denize'
+    image: 'denize-ada-app'
     build:
       context: .
       dockerfile: ./Ada_app/Dockerfile
@@ -19,7 +19,7 @@ services:
 
   postgres:
     container_name: 'postgres_ada'
-    image: projeto-ada-docker-denize-db
+    image: 'denize-ada-db'
     build:
       context: .
       dockerfile: ./Postgres/Dockerfile
@@ -27,7 +27,7 @@ services:
       - ada_app_image-network
     volumes:
       - db-data:/var/lib/postgresql/data
-      # copy the sql script to create tables
+      # cria as tabelas
       - ./Postgres/schema.sql:/docker-entrypoint-initdb.d/schema.sql
     env_file:
       - config.env

@@ -4,6 +4,4 @@ WORKDIR /docker-entrypoint-initdb.d
 
 ADD ./Postgres/schema.sql /docker-entrypoint-initdb.d
 
-VOLUME [ "db-data:/var/lib/postgresql/data" ]
-
 EXPOSE 5432
